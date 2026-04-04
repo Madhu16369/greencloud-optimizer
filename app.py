@@ -454,7 +454,7 @@ def cell_3_etl():
         'ORDER BY total_carbon_kg DESC'
     )
     df_region = pd.read_sql(q1, conn)
-    print("\n=== OUTPUT 1: CARBON INTENSITY BY REGION ===")
+    print("\n=== CARBON INTENSITY BY REGION ===")
     print(df_region.to_string(index=False))
     df_region.to_csv(os.path.join(BASE, 'data', 'by_region.csv'), index=False)
 
@@ -472,7 +472,7 @@ def cell_3_etl():
         'LIMIT 5'
     )
     df_top5 = pd.read_sql(q2, conn)
-    print("\n=== OUTPUT 2: TOP 5 EMITTING SERVICES ===")
+    print("\n=== TOP 5 EMITTING SERVICES ===")
     print(df_top5.to_string(index=False))
     df_top5.to_csv(os.path.join(BASE, 'data', 'top_services.csv'), index=False)
 
@@ -488,7 +488,7 @@ def cell_3_etl():
         'ORDER BY carbon_kg DESC'
     )
     df_cc = pd.read_sql(q5, conn)
-    print("\n=== OUTPUT 5: COST-CARBON CORRELATION ===")
+    print("\n=== COST-CARBON CORRELATION ===")
     print(df_cc.to_string(index=False))
     df_cc.to_csv(os.path.join(BASE, 'data', 'cost_carbon.csv'), index=False)
 
@@ -681,7 +681,7 @@ def cell_5_before_report():
     story.append(Spacer(1, 0.3*cm))
 
     # ── OUTPUT 1: Carbon Intensity by Region ──────────────────────────────────
-    story.append(Paragraph('OUTPUT 1: Carbon Intensity by AWS Region', styles['Heading2']))
+    story.append(Paragraph('Carbon Intensity by AWS Region', styles['Heading2']))
     story.append(Paragraph(
         'ap-south-1 (India, 0.708 kg/kWh — IEA 2024) emits far more CO2 per kWh than '
         'us-west-2 (Oregon, 0.132 kg/kWh — EPA eGRID2023 NWPP, 65% renewable).',
@@ -710,7 +710,7 @@ def cell_5_before_report():
     story.append(Spacer(1, 0.5*cm))
 
     # ── OUTPUT 2: Top 5 Emitting Services ─────────────────────────────────────
-    story.append(Paragraph('OUTPUT 2: Top 5 Emitting Cloud Services', styles['Heading2']))
+    story.append(Paragraph('Top 5 Emitting Cloud Services', styles['Heading2']))
     fig2 = px.bar(df_top5, x='total_carbon_kg', y='service_name',
         orientation='h', color='total_carbon_kg', color_continuous_scale='Reds',
         title='Top 5 Services by Carbon Emissions')
@@ -720,7 +720,7 @@ def cell_5_before_report():
     story.append(Spacer(1, 0.3*cm))
 
     # ── OUTPUT 3: Potential Reduction ─────────────────────────────────────────
-    story.append(Paragraph('OUTPUT 3: Potential CO2 Reduction — AI Recommendations', styles['Heading2']))
+    story.append(Paragraph('Potential CO2 Reduction — AI Recommendations', styles['Heading2']))
     top_reg    = df_region.iloc[0]
     total_co2  = float(df_region['total_carbon_kg'].sum())
     total_cost = float(df_region['total_cost_usd'].sum())
@@ -778,7 +778,7 @@ def cell_5_before_report():
     story.append(Spacer(1, 0.4*cm))
 
     # ── OUTPUT 4: Forecast Trend Line ─────────────────────────────────────────
-    story.append(Paragraph('OUTPUT 4: Forecast Trend — BAU vs Green Path (Prophet 90-day)', styles['Heading2']))
+    story.append(Paragraph('Forecast Trend — BAU vs Green Path (Prophet 90-day)', styles['Heading2']))
     _conn_pm = get_connection()
     _df_pm = pd.read_sql("SELECT usage_date, total_carbon_kg FROM cloud_usage WHERE phase='historical'", _conn_pm)
     _conn_pm.close()
@@ -805,7 +805,7 @@ def cell_5_before_report():
     story.append(to_img(fig4, 600, 320))
 
     # ── OUTPUT 5: Cost-Carbon Correlation ─────────────────────────────────────
-    story.append(Paragraph('OUTPUT 5: Cost-Carbon Correlation by Service', styles['Heading2']))
+    story.append(Paragraph('Cost-Carbon Correlation by Service', styles['Heading2']))
     fig5 = px.scatter(df_cc, x='cost_usd', y='carbon_kg', text='service_name',
         size='carbon_kg', color='kg_per_dollar', color_continuous_scale='RdYlGn_r',
         title='Cost vs Carbon (colour = kg CO2e per USD spent)')
@@ -1537,7 +1537,7 @@ def run_streamlit_dashboard():
     # PAGE: REGION ANALYSIS  (Output 1)
     # =========================================================================
     elif page == "📍 Region Analysis":
-        st.title("📍 OUTPUT 1: Carbon Intensity by AWS Region")
+        st.title("📍 Carbon Intensity by AWS Region")
         st.info("Grid emission factors from **EPA eGRID 2023** (US regions) and **IEA Emissions Factors 2024** (non-US regions)")
 
         col1, col2 = st.columns(2)
@@ -1576,7 +1576,7 @@ def run_streamlit_dashboard():
     # PAGE: SERVICE ANALYSIS  (Output 2)
     # =========================================================================
     elif page == "⚙️ Service Analysis":
-        st.title("⚙️ OUTPUT 2: Top 5 Emitting Services")
+        st.title("⚙️ Top 5 Emitting Services")
 
         col1, col2 = st.columns(2)
         with col1:
@@ -1613,7 +1613,7 @@ def run_streamlit_dashboard():
     # PAGE: AI FORECAST  (Output 4)
     # =========================================================================
     elif page == "🤖 AI Forecast":
-        st.title("🤖 OUTPUT 4: AI Forecast — BAU vs Green Path")
+        st.title("🤖 AI Forecast — BAU vs Green Path")
         st.info("Model: **XGBoost + Prophet Hybrid Ensemble**  |  Prophet captures trend & seasonality, XGBoost corrects residuals")
 
         from prophet import Prophet
@@ -1680,7 +1680,7 @@ def run_streamlit_dashboard():
     # PAGE: RECOMMENDATIONS  (Output 3)
     # =========================================================================
     elif page == "💡 Recommendations":
-        st.title("💡 OUTPUT 3: AI Recommendations & Potential Reduction")
+        st.title("💡 AI Recommendations & Potential Reduction")
 
         top_reg   = df_region.iloc[0]
         total_co2 = float(df_region['total_carbon_kg'].sum())
@@ -1805,7 +1805,7 @@ def run_streamlit_dashboard():
         st.divider()
 
         # Cost-Carbon scatter  (Output 5)
-        st.subheader("OUTPUT 5: Cost-Carbon Correlation")
+        st.subheader("Cost-Carbon Correlation")
         fig_cc = px.scatter(
             df_cc, x='cost_usd', y='carbon_kg', text='service_name',
             size='carbon_kg', color='kg_per_dollar',
